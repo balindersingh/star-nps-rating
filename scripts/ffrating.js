@@ -1,8 +1,20 @@
 /*ffrating library - custom library created by fast forms
 - Used to generate Star rating and NPS rating controls
 */
-(function ($) {
-    "use strict";
+(function (root, window, factoryMethod) {
+    'use strict';
+    if (typeof define === 'function' && define.amd) {
+        define(['fs', 'window'], factoryMethod);
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = function (root, window) {
+            return factoryMethod(root, window);
+        };
+    } else {
+        factoryMethod(root, window); // just executing in browser
+    }
+}(typeof jQuery !== 'undefined' ? jQuery : {}, typeof window !== 'undefined' ? window : this, function (jQuery, window) {
+    'use strict';
+    var $ = jQuery;
     var FFRating, root;
 
     root = typeof window !== "undefined" && window !== null ? window : global;
@@ -29,8 +41,7 @@
                     }
                     if (userOptions.isStar) {
                         controlSpecificClass = "star-rating-control";
-                    }
-                    else {
+                    } else {
                         controlSpecificClass = "nps-rating-control";
                     }
                     $elem.data("ffrating", {
@@ -45,7 +56,9 @@
 
                     });
 
-                    $widget = $("<div />", { "class": "ff-rating-widget " + controlSpecificClass + " custom-flex-control-container" }).insertBefore($elem);
+                    $widget = $("<div />", {
+                        "class": "ff-rating-widget " + controlSpecificClass + " custom-flex-control-container"
+                    }).insertBefore($elem);
 
                     // create A elements that will replace OPTIONs
                     var i = parseInt(userOptions.min);
@@ -65,29 +78,45 @@
                         if (currentValue >= 0) {
 
 
-                            $a = $("<a />", { href: "#", title: val, "data-rating-value": val, "data-rating-text": val });
+                            $a = $("<a />", {
+                                href: "#",
+                                title: val,
+                                "data-rating-value": val,
+                                "data-rating-text": val
+                            });
                             if (index == 0) {
-                                $span = $("<span />", { html: userOptions.minLabel, "class": "rating-label-first" });
+                                $span = $("<span />", {
+                                    html: userOptions.minLabel,
+                                    "class": "rating-label-first"
+                                });
+                            } else if ((index == userOptions.medium) && !userOptions.isStar) {
+                                $span = $("<span />", {
+                                    html: userOptions.mediumLabel,
+                                    "class": "rating-label-middle"
+                                });
+                            } else if (index == data.length - 1) {
+                                $span = $("<span />", {
+                                    html: userOptions.maxLabel,
+                                    "class": "rating-label-last"
+                                });
+                            } else {
+                                $span = $("<span />", {
+                                    html: ""
+                                });
                             }
-                            else if ((index == userOptions.medium) && !userOptions.isStar) {
-                                $span = $("<span />", { html: userOptions.mediumLabel, "class": "rating-label-middle" });
-                            }
-                            else if (index == data.length - 1) {
-                                $span = $("<span />", { html: userOptions.maxLabel, "class": "rating-label-last" });
-                            }
-                            else {
-                                $span = $("<span />", { html: "" });
-                            }
-                            /* adding span element to show numbers and radio button for NPS or icons for star*/
                             if (!userOptions.isStar) {
-                                $iconspan = $("<span />", { html: val, "class": "nps-text" });
+                                $iconspan = $("<span />", {
+                                    html: val,
+                                    "class": "nps-text"
+                                });
+                                $a.append($iconspan);
+                            } else {
+                                $iconspan = $("<span />", {
+                                    html: "",
+                                    "class": "star-icon"
+                                });
                                 $a.append($iconspan);
                             }
-                            else {
-                                $iconspan = $("<span />", { html: "", "class": "star-icon" });
-                                $a.append($iconspan);
-                            }
-                            /**/
                             $widget.append($a.append($span));
                         }
 
@@ -95,7 +124,10 @@
 
                     // append .ff-rating-current-rating div to the widget
                     if (userOptions.showSelectedRating) {
-                        $widget.append($("<span />", { text: "", "class": "ff-rating-current-rating" }));
+                        $widget.append($("<span />", {
+                            text: "",
+                            "class": "ff-rating-current-rating"
+                        }));
                     }
 
                     // first OPTION empty - allow deselecting of ratings
@@ -220,9 +252,7 @@
                                 $a.addClass("ff-rating-active")[nextAllorPreviousAll]()
                                     .addClass("ff-rating-active");
 
-                                /*$widget.trigger("ratingchange",
-                                    [$a.attr("data-rating-value"), $a.attr("data-rating-text")]
-                                );*/
+
                             }
                         });
 
@@ -265,6 +295,7 @@
 
             };
         }
+
         function safeAttr(inputElem, dataAttr, defaultValue, setDefaultIfEmpty) {
             var defaultvalue = defaultValue;
             try {
@@ -275,14 +306,12 @@
                 if (setDefaultIfEmpty && defaultvalue == "") {
                     defaultvalue = defaultValue;
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 defaultvalue = defaultValue
                 console.log("FF log (ffrating.js):" + err.message);
             }
             return defaultvalue;
         }
-        /*to remove all atrributes provided by paramter as array*/
         $.fn.removeAttributes = function (only, except) {
             if (only) {
                 only = $.map(only, function (item) {
@@ -324,24 +353,24 @@
             self = this;
             self.elem = elem;
             self.$elem = $(elem);
-            /* preset data attributes from input field elem*/
+            // preset data attributes from input field elem
             if (options !== undefined) {
-                if(options.min===undefined){
+                if (options.min === undefined) {
                     options.min = safeAttr($(elem), "data-flex-min", $.fn.ffrating.defaults.min, true);
                 }
-                if(options.minLabel===undefined){
+                if (options.minLabel === undefined) {
                     options.minLabel = safeAttr($(elem), "data-flex-minlabel", $.fn.ffrating.defaults.minLabel, false);
                 }
-                if(options.max===undefined){
+                if (options.max === undefined) {
                     options.max = safeAttr($(elem), "data-flex-max", $.fn.ffrating.defaults.max, true);
                 }
-                if(options.maxLabel===undefined){
+                if (options.maxLabel === undefined) {
                     options.maxLabel = safeAttr($(elem), "data-flex-maxlabel", $.fn.ffrating.defaults.maxLabel, false);
                 }
-                if(options.medium===undefined){
+                if (options.medium === undefined) {
                     options.medium = safeAttr($(elem), "data-flex-middle", $.fn.ffrating.defaults.medium, true);
                 }
-                if(options.mediumLabel===undefined){
+                if (options.mediumLabel === undefined) {
                     options.mediumLabel = safeAttr($(elem), "data-flex-middlelabel", $.fn.ffrating.defaults.mediumLabel, false);
                 }
             }
@@ -392,7 +421,7 @@
 
         });
     };
-    return $.fn.ffrating.defaults = {
+    $.fn.ffrating.defaults = {
         initialRating: null, // initial rating
         min: 0,
         max: 10,
@@ -406,12 +435,9 @@
         showSelectedRating: false, // append a div with a rating to the widget?
         reverse: false, // reverse the rating?
         readonly: false, // make the rating ready-only?
-        onSelect: function () {
-        }, // callback fired when a rating is selected
-        onClear: function () {
-        }, // callback fired when a rating is cleared
-        onDestroy: function () {
-        } // callback fired when a widget is destroyed
+        onSelect: function () {}, // callback fired when a rating is selected
+        onClear: function () {}, // callback fired when a rating is cleared
+        onDestroy: function () {} // callback fired when a widget is destroyed
     };
-})(jQuery);
+}));
 /*FFRATING LIB ENDS*/

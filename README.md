@@ -4,4 +4,6 @@ Purpose of this jQuery plugin is to show simple input textboxes as Star rating o
 Basically when you initialize it, it hides the input control and append html to the DOM.
 It respects user interaction and propogate the change to input textboxe's value.
 
+It also has couple of unit test using mocha.
+
 To see the plugin in action, download the source and simply see index.html in the browser.
