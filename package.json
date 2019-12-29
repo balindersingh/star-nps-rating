@@ -6,9 +6,16 @@
     "test": "mocha \"./test/**_test.js\"",
     "test:coverage": "npm run cover:unit && npm run cover:report",
     "test:coveragehtml": "npm run cover:unit && npm run cover:reporthtml",
-    "cover:unit": "nyc --silent npm run test",
+    "cover:unit": "nyc --silent  npm run test",
     "cover:report": "nyc report --reporter=lcov --reporter=text --report-dir='./jscoverage'",
     "cover:reporthtml": "nyc report --reporter=html --report-dir='./jscoverage'"
+  },
+
+  "nyc": {
+    "include": [
+      "scripts/*.js"
+    ],
+    "exclude": ["**/jquery.js"]
   },
   "author": {
     "name": "Balinder Singh"
